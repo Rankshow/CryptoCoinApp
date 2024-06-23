@@ -1,6 +1,6 @@
 @CryptoCoinApp_HostAddress = http://localhost:5126
 
-GET {{CryptoCoinApp_HostAddress}}/weatherforecast/
+GET {{CryptoCoinApp_HostAddress}}/CryptoCoinApp/
 Accept: application/json
 
 ###

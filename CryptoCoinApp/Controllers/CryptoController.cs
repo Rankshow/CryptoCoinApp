@@ -12,7 +12,7 @@ public class CryptoCurrencyController : ControllerBase
     public CryptoCurrencyController(IConfiguration configuration, IHttpConnectionHelper httpConnectionHelpers)
     {
         _httpConnectionHelpers = httpConnectionHelpers;
-        url = configuration.GetValue<string>("AppOptions:url");
+        url = configuration.GetValue<string>("CryptoAppOptions:url");
     }
 
     [HttpGet]

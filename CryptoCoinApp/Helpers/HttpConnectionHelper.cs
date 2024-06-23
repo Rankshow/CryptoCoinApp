@@ -4,82 +4,24 @@ using System.Text;
 using System.Text.Json;
 namespace CryptoCoinApp.Helpers;
 
-/*
 public class HttpConnectionHelper : IHttpConnectionHelper
 {
-    public async Task<T> AppRequest<T>(
-        string url,
-        string requestType,
-        object? requestBody = null,
-        Dictionary<string, string>? headers = null,
-        string? user = null,
-        string? password = null
-    ) where T : new()
+    /*NB: Please note tha a specific type of object can be used as response
     {
-        T result = new();
-        try
-        {
-            var client = new RestClient(url);
-            Method method = requestType.ToLower() == "post" ? Method.Post : Method.Get;
-
-            if (requestType.ToLower() == "post" && requestBody != null)
-            {
-                request.AddJsonBody(requestBody);
-            }
-
-            if (headers != null)
-            {
-                foreach (var header in headers)
-                {
-                    request.AddHeader(header.Key, header.Value);
-                }
-            }
-
-            if (!string.IsNullOrEmpty(user) && !string.IsNullOrEmpty(password))
-            {
-                var byteArray = Encoding.ASCII.GetBytes($"{user}:{password}");
-                request.AddHeader("Authorization", "Basic " + Convert.ToBase64String(byteArray));
-            }
-
-            var response = await client.ExecuteAsync(request);
-            var responseContent = response.Content;
-
-            if (response.IsSuccessful)
-            {
-                result = JsonSerializer.Deserialize<T>(responseContent);
-                var codeProperty = typeof(T).GetProperty("Code");
-                codeProperty?.SetValue(result, "00");
-                var descriptionProperty = typeof(T).GetProperty("Description");
-                descriptionProperty?.SetValue(result, "Successful");
-            }
-            else
-            {
-                var errorResponse = new
-                {
-                    code = "24",
-                    description = responseContent
-                };
-                result = JsonSerializer.Deserialize<T>(JsonSerializer.Serialize(errorResponse));
-            }
-        }
-        catch (Exception ex)
-        {
-            var errorResponse = new
-            {
-                code = "77",
-                description = ex.Message
-            };
-            result = JsonSerializer.Deserialize<T>(JsonSerializer.Serialize(errorResponse));
-        }
-        return result;
+      code = string,
+      description = string,
+      data = object
     }
-}
-*/
-
-
-public class HttpConnectionHelper : IHttpConnectionHelper
-{
-    public async Task<T> AppRequest<T>(string url, string requestType, object? requestBody = null, Dictionary<string, string>? headers = null, string? authUser = null, string? authPword = null) where T : new()
+    When code is 27, the response was unsuccessful
+    When code is 77, this logic broke somewhere
+    */
+    public async Task<T> AppRequest<T>(
+        string url, 
+        string requestType, 
+        object? requestBody = null, 
+        Dictionary<string, string>? headers = null,
+        string? user = null, 
+        string? password = null) where T : new()
     {
         T result = new();
         try
@@ -100,11 +42,11 @@ public class HttpConnectionHelper : IHttpConnectionHelper
                 }
             }
 
-            if (!string.IsNullOrEmpty(authUser) && !string.IsNullOrEmpty(authPword))
+            if (!string.IsNullOrEmpty(user) && !string.IsNullOrEmpty(password))
             {
-                var byteArray = Encoding.ASCII.GetBytes($"{authUser}:{authPword}");
-                var authValue = Convert.ToBase64String(byteArray);
-                request.AddHeader("Authorization", $"Basic {authValue}");
+                var byteArray = Encoding.ASCII.GetBytes($"{user}:{password}");
+                var value = Convert.ToBase64String(byteArray);
+                request.AddHeader("Authorization", $"Basic {value}");
             }
 
             var response = await client.ExecuteAsync(request);
@@ -121,7 +63,7 @@ public class HttpConnectionHelper : IHttpConnectionHelper
             {
                 var errorResponse = new
                 {
-                    code = "26",
+                    code = "24",
                     description = response.Content
                 };
                 result = JsonSerializer.Deserialize<T>(JsonSerializer.Serialize(errorResponse));
@@ -131,7 +73,7 @@ public class HttpConnectionHelper : IHttpConnectionHelper
         {
             var errorResponse = new
             {
-                code = "99",
+                code = "77",
                 description = ex.Message
             };
             result = JsonSerializer.Deserialize<T>(JsonSerializer.Serialize(errorResponse));

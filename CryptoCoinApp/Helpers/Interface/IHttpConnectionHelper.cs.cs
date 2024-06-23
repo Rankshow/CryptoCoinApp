@@ -7,7 +7,7 @@
             string requestType, 
             object? requestBody = null, 
             Dictionary<string, string>? headers = null, 
-            string? authUser = null, 
-            string? authPword = null) where T : new();
+            string? user = null, 
+            string? password = null) where T : new();
     }
 }
