@@ -1,4 +1,5 @@
 ﻿using CryptoCoinApp.Common;
+using CryptoCoinApp.Helpers;
 using CryptoCoinApp.Helpers.Interface;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,21 +22,7 @@ public class CryptoCurrencyController : ControllerBase
         var apiResponse = await _httpConnectionHelpers.AppRequest<ApiResponse>(url, "get");
         if (apiResponse.data.Any())
         {
-            var totalCount = apiResponse.data.Count();
-            var pagedData = apiResponse.data
-                .OrderBy(x => x.id)
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .ToList();
-
-            var paginatedResponse = new PaginatedResponse<CryptoRecord>
-            {
-                PageNumber = pageNumber,
-                PageSize = pageSize,
-                TotalCount = totalCount,
-                Data = pagedData
-            };
-
+            var paginatedResponse = PaginationHelper.Paginate(apiResponse.data, pageNumber, pageSize);
             return Ok(paginatedResponse);
         }
 
